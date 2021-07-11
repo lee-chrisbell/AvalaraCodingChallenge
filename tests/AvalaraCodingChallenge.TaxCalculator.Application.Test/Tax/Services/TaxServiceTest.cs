@@ -20,7 +20,7 @@ namespace AvalaraCodingChallenge.TaxCalculator.Application.Test.Tax.Services
         }
 
         [Fact]
-        public async Task GetTaxAmountForStateAndCity_ShouldGetCityTaxInfo_WhenFoundInRepo()
+        public async Task GetTaxAmountForStateAndCityAsync_ShouldGetCityTaxInfo_WhenFoundInRepo()
         {
             var state = new State("OH");
             state.AddCity("Troy", .0725m);
@@ -31,13 +31,13 @@ namespace AvalaraCodingChallenge.TaxCalculator.Application.Test.Tax.Services
             
             var unitUnderTest = CreateTaxService();
 
-            var res = await unitUnderTest.GetTaxAmountForStateAndCity("OH", "Troy", 12.50m);
+            var res = await unitUnderTest.GetTaxAmountForStateAndCityAsync("OH", "Troy", 12.50m);
 
             Assert.Equal(.91m, res);
         }
 
         [Fact]
-        public async Task GetTaxAmountForStateAndCity_ShouldBubbleException_WhenNotFoundInRepo()
+        public async Task GetTaxAmountForStateAndCityAsync_ShouldBubbleException_WhenNotFoundInRepo()
         {
             _mocker.GetMock<ITaxRepository>()
                 .Setup(s => s.GetCityTaxInformationAsync("OH", "Troy"))
@@ -45,7 +45,7 @@ namespace AvalaraCodingChallenge.TaxCalculator.Application.Test.Tax.Services
             
             var unitUnderTest = CreateTaxService();
 
-            await Assert.ThrowsAsync<CityMissingException>(() => unitUnderTest.GetTaxAmountForStateAndCity("OH", "Troy", 12.50m));
+            await Assert.ThrowsAsync<CityMissingException>(() => unitUnderTest.GetTaxAmountForStateAndCityAsync("OH", "Troy", 12.50m));
         }
     }
 }

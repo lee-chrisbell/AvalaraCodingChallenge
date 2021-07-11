@@ -20,15 +20,15 @@ namespace AvalaraCodingChallenge.TaxCalculator.Web.Test.Taxes.Controllers
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturnDto_WhenValuesValid()
+        public async Task GetTaxForCityAsync_ShouldReturnDto_WhenValuesValid()
         {
             var unitUnderTest = CreateTaxesController();
 
             _mocker.GetMock<ITaxService>()
-                .Setup(s => s.GetTaxAmountForStateAndCity("OH", "Miami", 12.40m))
+                .Setup(s => s.GetTaxAmountForStateAndCityAsync("OH", "Miami", 12.40m))
                 .ReturnsAsync(.90m);
 
-            var result = await unitUnderTest.GetTaxForCity("OH", "Miami", 12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("OH", "Miami", 12.40m) as ObjectResult;
             var taxInfo = result.Value as TaxDto;
             Assert.Equal(12.40m, taxInfo.BasePrice);
             Assert.Equal(.90m, taxInfo.TaxAmount);
@@ -36,63 +36,63 @@ namespace AvalaraCodingChallenge.TaxCalculator.Web.Test.Taxes.Controllers
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturnBadRequest_WhenStateIsInvalid()
+        public async Task GetTaxForCityAsync_ShouldReturnBadRequest_WhenStateIsInvalid()
         {
             var unitUnderTest = CreateTaxesController();
 
-            var result = await unitUnderTest.GetTaxForCity("", "Miami", 12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("", "Miami", 12.40m) as ObjectResult;
 
             Assert.Equal(400, result.StatusCode);
             Assert.Equal("Query parameter state is required.", (result.Value as ErrorDto).ErrorMessage);
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturnBadRequest_WhenCityIsInvalid()
+        public async Task GetTaxForCityAsync_ShouldReturnBadRequest_WhenCityIsInvalid()
         {
             var unitUnderTest = CreateTaxesController();
 
-            var result = await unitUnderTest.GetTaxForCity("OH", "", 12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("OH", "", 12.40m) as ObjectResult;
 
             Assert.Equal(400, result.StatusCode);
             Assert.Equal("Query parameter city is required.", (result.Value as ErrorDto).ErrorMessage);
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturnBadRequest_WhenBasePriceIsInvalid()
+        public async Task GetTaxForCityAsync_ShouldReturnBadRequest_WhenBasePriceIsInvalid()
         {
             var unitUnderTest = CreateTaxesController();
 
-            var result = await unitUnderTest.GetTaxForCity("OH", "Miami", -12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("OH", "Miami", -12.40m) as ObjectResult;
 
             Assert.Equal(400, result.StatusCode);
             Assert.Equal("Query parameter basePrice must be greater than 0.", (result.Value as ErrorDto).ErrorMessage);
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturn500_WhenExceptionIsThrown()
+        public async Task GetTaxForCityAsync_ShouldReturn500_WhenExceptionIsThrown()
         {
             var unitUnderTest = CreateTaxesController();
 
             _mocker.GetMock<ITaxService>()
-                .Setup(s => s.GetTaxAmountForStateAndCity("OH", "Miami", 12.40m))
+                .Setup(s => s.GetTaxAmountForStateAndCityAsync("OH", "Miami", 12.40m))
                 .Throws(new System.Exception("Broken DB Connection or something"));
 
-            var result = await unitUnderTest.GetTaxForCity("OH", "Miami", 12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("OH", "Miami", 12.40m) as ObjectResult;
 
             Assert.Equal(500, result.StatusCode);
             Assert.Equal("Something went wrong.  Please contact your administrator.", (result.Value as ErrorDto).ErrorMessage);
         }
 
         [Fact]
-        public async Task GetTaxForCity_ShouldReturn404_WhenCityNotFound()
+        public async Task GetTaxForCityAsync_ShouldReturn404_WhenCityNotFound()
         {
             var unitUnderTest = CreateTaxesController();
 
             _mocker.GetMock<ITaxService>()
-                .Setup(s => s.GetTaxAmountForStateAndCity("OH", "Miami", 12.40m))
+                .Setup(s => s.GetTaxAmountForStateAndCityAsync("OH", "Miami", 12.40m))
                 .Throws(new CityMissingException());
 
-            var result = await unitUnderTest.GetTaxForCity("OH", "Miami", 12.40m) as ObjectResult;
+            var result = await unitUnderTest.GetTaxForCityAsync("OH", "Miami", 12.40m) as ObjectResult;
 
             Assert.Equal(404, result.StatusCode);
             Assert.Equal("We do not have city information for the given city in the given state.", (result.Value as ErrorDto).ErrorMessage);

@@ -33,7 +33,7 @@ namespace AvalaraCodingChallenge.TaxCalculator.Web.Tax.Controllers
         /// <param name="basePrice">The price of the product without tax</param>
         /// <returns>IActionResult with tax information or an error message.</returns>
         [HttpGet("SalesTax/{state}/{city}")]
-        public async ValueTask<IActionResult> GetTaxForCity(string state, string city, decimal basePrice)
+        public async Task<IActionResult> GetTaxForCityAsync(string state, string city, decimal basePrice)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace AvalaraCodingChallenge.TaxCalculator.Web.Tax.Controllers
                 if(basePrice <= 0)
                     return BadRequest(new ErrorDto { ErrorMessage = $"Query parameter {nameof(basePrice)} must be greater than 0." });
 
-                var taxAmount = await _service.GetTaxAmountForStateAndCity(state, city, basePrice);
+                var taxAmount = await _service.GetTaxAmountForStateAndCityAsync(state, city, basePrice);
 
                 return Ok(new TaxDto
                 {

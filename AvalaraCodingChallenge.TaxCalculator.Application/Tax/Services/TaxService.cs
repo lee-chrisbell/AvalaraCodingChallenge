@@ -24,7 +24,7 @@ namespace AvalaraCodingChallenge.TaxCalculator.Application.Tax.Services
         /// <param name="city">The city name</param>
         /// <param name="basePrice">The price of the item</param>
         /// <returns></returns>
-        public async Task<decimal> GetTaxAmountForStateAndCity(string state, string city, decimal basePrice)
+        public async Task<decimal> GetTaxAmountForStateAndCityAsync(string state, string city, decimal basePrice)
         {
             var cityTaxInfo = await _taxRepository.GetCityTaxInformationAsync(state, city);
 
